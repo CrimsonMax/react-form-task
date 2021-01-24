@@ -1,50 +1,38 @@
 import './Form.css'
 import { useEffect, useRef, useState } from 'react';
-import checkInputs, { checkName, checkEmail, checkLanguage, checkPassword } from './FormControl'
-import setErrorFor from './FormControl'
+import { checkName, checkEmail, checkPhone } from './FormControl'
 
 const Form = () => {
 
   const [form, setForm] = useState({ lang: '', name: '', email: '', phone: '', check: false })
-  // const [errors, setErrors] = useState()
 
   const firstRender = useRef(true)
 
-  let ok = () => {
-    let btn = document.querySelector('#btn')
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+    } else {
+      ok()
+    } // eslint-disable-next-line
+  }, [form])
 
-    if (form.lang && form.name && form.email && form.phone && form.check) {
+  function ok() {
+    let btn = document.querySelector('#btn')
+    
+    const errors = []
+    const error = document.querySelectorAll('small')
+    error.forEach(el => {
+      if (el.innerText) {
+        errors.push(el.innerText)
+      }
+    })
+
+    if (form.lang && form.name && form.email && form.phone && form.check && errors.length === 0) {
       btn.removeAttribute('disabled')
     } else {
       btn.setAttribute('disabled', 'disabled')
     }
   }
-
-  // let not = () => {
-  //   if (!form.name || !form.phone || !form.lang || !form.email || !form.check) {
-  //     let btn = document.querySelector('#btn')
-  //       btn.getAttribute('disabled')
-  //   }
-  // }
-
-  useEffect(() => {
-    console.log('hey!')
-    if (firstRender.current) {
-      firstRender.current = false
-    } else {
-      ok()
-    }
-  }, [form])
-
-
-  // useEffect(() => {
-  //   console.log('hey!')
-  //   if (firstRender.current) {
-  //     firstRender.current = false
-  //   } else {
-  //     not()
-  //   }
-  // }, [form])
 
   const handlerLang = () => {
     let drop = document.querySelector('#Language')
@@ -62,38 +50,18 @@ const Form = () => {
   }
 
   const handlerPhone = () => {
-    let field = document.querySelector('#password')
+    let field = document.querySelector('#phone')
     setForm(form => form = { ...form, phone: field.value })
   }
 
   const handlerCheck = () => {
-    let box = document.querySelector('#password2')
+    let box = document.querySelector('#check')
     setForm(form => form = { ...form, check: box.checked })
   }
-
-  const handlerSubmit = event => {
-    event.preventDefault()
-    checkInputs()
-    valid()
-  }
-
-  function valid() {
-    const errors = []
-    const error = document.querySelectorAll('small')
-    error.forEach(el => {
-      if (el.innerText) {
-        errors.push(el.innerText)
-      }
-    })
-    if (errors.length === 0) {
-      const date = document.querySelector('#form')
-      date.submit()
-    }
-  }
-
+  
   return (
     <div className="container">
-      <form action="" id="form" onSubmit={handlerSubmit} className="form">
+      <form action="" id="form" className="form">
         <div className="form-control">
           <div className="header">
             <h1>Регистрация</h1>
@@ -102,48 +70,36 @@ const Form = () => {
         </div>
         <div className="form-control">
           <label htmlFor="username">Имя</label>
-          <input type="text" id="username" onBlur={checkName} defaultValue={form.name} onChange={handlerName} placeholder="Введите Ваше Имя" />
-          <i className="fas fa-check-circle"></i>
-          <i className="fas fa-exclamation-circle"></i>
+          <input type="text" id="username" onInput={checkName} defaultValue={form.name} onChange={handlerName} placeholder="Введите Ваше Имя" />
           <small></small>
         </div>
         <div className="form-control">
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" onBlur={checkEmail} defaultValue={form.email} onChange={handlerEmail} placeholder="Введите Ваш Email" />
-          <i className="fas fa-check-circle"></i>
-          <i className="fas fa-exclamation-circle"></i>
+          <input type="email" id="email" onInput={checkEmail} defaultValue={form.email} onChange={handlerEmail} placeholder="Введите Ваш Email" />
           <small></small>
         </div>
         <div className="form-control">
-          <label htmlFor="password">Номер телефона</label>
-          <input type="password" id="password" onBlur={checkPassword} defaultValue={form.phone} onChange={handlerPhone} placeholder="Введите номер телефона" />
-          <i className="fas fa-check-circle"></i>
-          <i className="fas fa-exclamation-circle"></i>
+          <label htmlFor="phone">Номер телефона</label>
+          <input type="text" id="phone" onInput={checkPhone} defaultValue={form.phone} onChange={handlerPhone} placeholder="Введите номер телефона" />
           <small></small>
         </div>
         <div className="form-control">
           <label htmlFor="Language">Язык</label>
-          <select name="Language" id="Language" onBlur={checkLanguage} defaultValue={form.lang} onChange={handlerLang} required>
-            <option value="" disabled>Язык</option>
+          <select name="Language" id="Language" defaultValue={form.lang} onChange={handlerLang} required>
+            <option value="" disabled>Язык</option> 
             <option value="Russian">Русский</option>
             <option value="English">Английский</option>
             <option value="Chinese">Китайский</option>
             <option value="Spanish">Испанский</option>
           </select>
-          <i className="fas fa-check-circle"></i>
-          <i className="fas fa-exclamation-circle"></i>
-          <small></small>
         </div>
         <div className="form-control">
           <div className="checkbox">
-            <input type="checkbox" defaultValue={form.check} onChange={handlerCheck} className="custom-checkbox" id="password2" />
-            <label htmlFor="password2">Номер телефона</label>
-            <i className="fas fa-check-circle"></i>
-            <i className="fas fa-exclamation-circle"></i>
+            <input type="checkbox" defaultValue={form.check} onChange={handlerCheck} className="custom-checkbox" id="check" />
+            <label htmlFor="check">Принимаю <span><a href="https://www.bing.com/">условия</a></span> использования.</label>
           </div>
-          <small></small>
         </div>
-        <button id="btn" type='submit' disabled>Submit</button>
+        <button id="btn" type='submit' disabled>Зарегестрироваться</button>
       </form>
     </div>
   )
