@@ -11,6 +11,17 @@ export function checkName() {
   }
 }
 
+export function checkText() {
+  const text = document.querySelector('#text')
+  const textValue = text.value.trim()
+
+  if (textValue === '') {
+    setErrorFor(text, 'Пожалуйста введите text!')
+  } else {
+    setSuccessFor(text)
+  }
+}
+
 export function checkEmail() {
   const email = document.querySelector('#email')
   const emailValue = email.value.trim()

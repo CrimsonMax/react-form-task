@@ -1,10 +1,10 @@
 import './Form.css'
 import { useEffect, useRef, useState } from 'react';
-import { checkName, checkEmail, checkPhone } from './FormControl'
+import { checkName, checkEmail, checkPhone, checkText } from './FormControl'
 
 const Form = () => {
 
-  const [form, setForm] = useState({ lang: '', name: '', email: '', phone: '', check: false })
+  const [form, setForm] = useState({ lang: '', name: '', email: '', phone: '', text: '', check: false })
 
   const firstRender = useRef(true)
 
@@ -27,7 +27,7 @@ const Form = () => {
       }
     })
 
-    if (form.lang && form.name && form.email && form.phone && form.check && errors.length === 0) {
+    if (form.lang && form.name && form.email && form.phone && form.check && form.text && errors.length === 0) {
       btn.removeAttribute('disabled')
     } else {
       btn.setAttribute('disabled', 'disabled')
@@ -42,6 +42,11 @@ const Form = () => {
   const handlerName = () => {
     let field = document.querySelector('#username')
     setForm(form => form = { ...form, name: field.value })
+  }
+
+  const handlerText = () => {
+    let field = document.querySelector('#text')
+    setForm(form => form = { ...form, text: field.value })
   }
 
   const handlerEmail = () => {
@@ -61,7 +66,7 @@ const Form = () => {
   
   return (
     <div className="container">
-      <form action="" id="form" className="form">
+      <form autoComplete="off" action="" id="form" className="form">
         <div className="form-control">
           <div className="header">
             <h1>Регистрация</h1>
@@ -71,6 +76,11 @@ const Form = () => {
         <div className="form-control">
           <label htmlFor="username">Имя</label>
           <input type="text" id="username" onInput={checkName} defaultValue={form.name} onChange={handlerName} placeholder="Введите Ваше Имя" />
+          <small></small>
+        </div>
+        <div className="form-control">
+          <label htmlFor="text">Text</label>
+          <textarea maxLength="5" id="text" onInput={checkText} defaultValue={form.text} onChange={handlerText} placeholder="Введите Text" />
           <small></small>
         </div>
         <div className="form-control">
